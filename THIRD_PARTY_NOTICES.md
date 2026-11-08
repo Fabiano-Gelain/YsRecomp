@@ -7,7 +7,7 @@ their own licenses.
 
 | Component | License | How it is used |
 |---|---|---|
-| [PCERecomp](https://github.com/GITHUB_USER/PCERecomp) | MIT | The emulated console, the BIOS routines in C, the recompiler and the trace tools. Included as a Git submodule (`external/PCERecomp`) or a sibling folder; its own third-party notices are in its [THIRD_PARTY_NOTICES.md](https://github.com/GITHUB_USER/PCERecomp/blob/main/THIRD_PARTY_NOTICES.md). Its `tools/reference_trace/` (Geargrafx bridge, GPL-3.0) is a development tool and is not part of `YsRecomp.exe`. |
+| [PCERecomp](https://github.com/Fabiano-Gelain/PCERecomp) | MIT | The emulated console, the BIOS routines in C, the recompiler and the trace tools. Included as a Git submodule (`external/PCERecomp`) or a sibling folder; its own third-party notices are in its [THIRD_PARTY_NOTICES.md](https://github.com/Fabiano-Gelain/PCERecomp/blob/main/THIRD_PARTY_NOTICES.md). Its `tools/reference_trace/` (Geargrafx bridge, GPL-3.0) is a development tool and is not part of `YsRecomp.exe`. |
 | [SDL 3](https://github.com/libsdl-org/SDL) 3.2.30 | zlib | Window, graphics, input (including XInput controllers) and audio. Not in this repository: CMake downloads the release archive at the first build and links it statically into `YsRecomp.exe`. |
 | [stb_image](https://github.com/nothings/stb) 2.30 (bundled inside the SDL sources) | Public domain (or MIT, at your choice) | Decodes the launcher's JPG cover images (`runtime/app/launcher_image.c`). Used from the downloaded SDL sources, not copied here. |
 

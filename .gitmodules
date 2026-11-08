@@ -1,0 +1,3 @@
+[submodule "external/PCERecomp"]
+	path = external/PCERecomp
+	url = https://github.com/Fabiano-Gelain/PCERecomp.git

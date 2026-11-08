@@ -6,10 +6,10 @@ bin/cue copy of the game and play: **no emulator and no System Card BIOS file ne
 
 ![Ys II on a 16:9 screen with the Fill crop and the new status bar](docs/site/img/hero.png)
 
-Project page: <https://GITHUB_USER.github.io/YsRecomp/>
+Project page: <https://Fabiano-Gelain.github.io/YsRecomp/>
 
 The game's original machine code was translated to C ahead of time (*static recompilation*) with
-[PCERecomp](https://github.com/GITHUB_USER/PCERecomp) and compiled together with a simulated PC Engine. Every
+[PCERecomp](https://github.com/Fabiano-Gelain/PCERecomp) and compiled together with a simulated PC Engine. Every
 instruction behaves as on the console, and that is checked automatically against an interpreter and against the
 Geargrafx emulator. The PC-side extras are drawn on top of the game without changing it.
 
@@ -67,7 +67,7 @@ Geargrafx emulator. The PC-side extras are drawn on top of the game without chan
 
 ## How to play
 
-1. Download `YsRecomp.zip` from the [Releases](https://github.com/GITHUB_USER/YsRecomp/releases) page and unzip it
+1. Download `YsRecomp.zip` from the [Releases](https://github.com/Fabiano-Gelain/YsRecomp/releases) page and unzip it
    anywhere (no installation; Windows 10 or 11, 64-bit).
 2. Make a BIN/CUE image of **Ys Book I & II (USA)** from your own disc: one `.cue` and its `.bin` file(s) in one
    folder (for example the Redump set, 1 `.cue` + 43 tracks).
@@ -97,7 +97,7 @@ Requirements: Windows 10/11 64-bit, Visual Studio 2022 Build Tools (MSVC), Pytho
 Tools and `build.ps1` finds it; SDL3 is downloaded by CMake on the first build.
 
 ```powershell
-git clone --recursive https://github.com/GITHUB_USER/YsRecomp.git
+git clone --recursive https://github.com/Fabiano-Gelain/YsRecomp.git
 cd YsRecomp
 # put your files in roms\ (never committed):
 #   roms\Ys Book I & II (USA).cue  (+ its .bin tracks)
@@ -142,7 +142,7 @@ are described in [CLAUDE.md](CLAUDE.md) and [tools/trace/README.md](tools/trace/
 - [docs/ys_notes.md](docs/ys_notes.md): the game's memory, engine, windows, scrolling, fades, sound, disc layout
 - [docs/ys_bios.md](docs/ys_bios.md): the BIOS routines the game uses
 - [docs/ROADMAP.md](docs/ROADMAP.md): status and plans
-- [PCERecomp](https://github.com/GITHUB_USER/PCERecomp): the recompiler and the simulated console
+- [PCERecomp](https://github.com/Fabiano-Gelain/PCERecomp): the recompiler and the simulated console
 
 ## Legal
 

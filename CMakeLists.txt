@@ -24,14 +24,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 set(YS_CUE "${CMAKE_SOURCE_DIR}/roms/Ys Book I & II (USA).cue")
 set(SYSCARD2 "${CMAKE_SOURCE_DIR}/roms/[BIOS] TurboGrafx CD System Card (USA) (v2.0).pce")
 
-# PCERecomp (the emulated console and the tools): submodule in external/PCERecomp; while there is no submodule,
-# the folder next to this one (..\PCERecomp). PCERECOMP_DIR picks another one.
+# PCERecomp (the emulated console and the tools): the working copy next to this folder (..\PCERecomp) when it
+# exists (development of both projects side by side), otherwise the submodule in external/PCERecomp (a clone made
+# with --recursive). PCERECOMP_DIR picks another one.
 set(PCERECOMP_DIR "" CACHE PATH "PCERecomp folder")
 if(NOT PCERECOMP_DIR)
-    if(EXISTS "${CMAKE_SOURCE_DIR}/external/PCERecomp/CMakeLists.txt")
-        set(PCERECOMP_DIR "${CMAKE_SOURCE_DIR}/external/PCERecomp")
-    else()
+    if(EXISTS "${CMAKE_SOURCE_DIR}/../PCERecomp/CMakeLists.txt")
         get_filename_component(PCERECOMP_DIR "${CMAKE_SOURCE_DIR}/../PCERecomp" ABSOLUTE)
+    else()
+        set(PCERECOMP_DIR "${CMAKE_SOURCE_DIR}/external/PCERecomp")
     endif()
 endif()
 if(NOT EXISTS "${PCERECOMP_DIR}/CMakeLists.txt")

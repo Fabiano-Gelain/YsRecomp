@@ -1,6 +1,7 @@
-"""Onde está o PCERecomp (o console emulado e as ferramentas genéricas), para os scripts do YsRecomp.
+"""Where PCERecomp is (the emulated console and the generic tools), for the YsRecomp scripts.
 
-Ordem: a variável PCERECOMP_DIR; o submódulo external/PCERecomp; a pasta ao lado (../PCERecomp).
+Order (same as CMakeLists.txt): the PCERECOMP_DIR variable; the working copy next to this folder (../PCERecomp);
+the submodule external/PCERecomp.
 """
 import os
 
@@ -11,10 +12,10 @@ def find():
     env = os.environ.get("PCERECOMP_DIR")
     if env:
         return os.path.abspath(env)
-    sub = os.path.join(ROOT, "external", "PCERecomp")
-    if os.path.isfile(os.path.join(sub, "CMakeLists.txt")):
-        return sub
-    return os.path.abspath(os.path.join(ROOT, "..", "PCERecomp"))
+    side = os.path.abspath(os.path.join(ROOT, "..", "PCERecomp"))
+    if os.path.isfile(os.path.join(side, "CMakeLists.txt")):
+        return side
+    return os.path.join(ROOT, "external", "PCERecomp")
 
 
 PCERECOMP = find()

@@ -213,8 +213,8 @@ footer .links { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; 
     <p class="sub2">No emulator and no BIOS file: point it at your own bin/cue and play, with a widescreen-friendly
       display, smooth motion above 60 FPS and an options menu in the game's own style.</p>
     <div class="cta">
-      <a class="btn" href="https://github.com/GITHUB_USER/YsRecomp/releases">Download for Windows</a>
-      <a class="btn ghost" href="https://github.com/GITHUB_USER/YsRecomp">Source on GitHub</a>
+      <a class="btn" href="https://github.com/Fabiano-Gelain/YsRecomp/releases">Download for Windows</a>
+      <a class="btn ghost" href="https://github.com/Fabiano-Gelain/YsRecomp">Source on GitHub</a>
     </div>
     <div class="shot"><img src="site/img/hero.png" width="1280" height="720" alt="Ys II village on a 16:9 screen with the Fill crop and the new status bar"></div>
     <div class="badges">
@@ -373,8 +373,8 @@ footer .links { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; 
       AI), directed and play-tested by the author, who set the goals, played the games through, recorded sessions,
       reported what he saw and approved each step. Every step ended with an automated test, and the recorded sessions
       are replayed as regression tests. The recompiler and the simulated console live in a separate project,
-      <a href="https://github.com/GITHUB_USER/PCERecomp">PCERecomp</a>; the full story is in the
-      <a href="https://github.com/GITHUB_USER/YsRecomp/blob/main/docs/devlog.md">development log</a>.</div>
+      <a href="https://github.com/Fabiano-Gelain/PCERecomp">PCERecomp</a>; the full story is in the
+      <a href="https://github.com/Fabiano-Gelain/YsRecomp/blob/main/docs/devlog.md">development log</a>.</div>
   </div>
 </section>
 
@@ -383,7 +383,7 @@ footer .links { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; 
     <div>
       <h2>Download and play</h2>
       <ol class="howto">
-        <li>Download <b>YsRecomp.zip</b> from the <a href="https://github.com/GITHUB_USER/YsRecomp/releases">Releases page</a>
+        <li>Download <b>YsRecomp.zip</b> from the <a href="https://github.com/Fabiano-Gelain/YsRecomp/releases">Releases page</a>
           and unzip it anywhere. No installation.</li>
         <li>Make a BIN/CUE image of <b>Ys Book I &amp; II (USA)</b> from your own disc: one .cue and its .bin files in
           one folder.</li>
@@ -392,7 +392,7 @@ footer .links { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; 
         <li>Press Run (Enter) in the launcher. Esc opens the options at any time.</li>
       </ol>
       <p class="note">Windows 10 or 11, 64-bit. The game is not included: you need your own copy.</p>
-      <p><a class="btn" href="https://github.com/GITHUB_USER/YsRecomp/releases">Get the latest release</a></p>
+      <p><a class="btn" href="https://github.com/Fabiano-Gelain/YsRecomp/releases">Get the latest release</a></p>
     </div>
     <div>
       <h3>Controls</h3>
@@ -417,7 +417,7 @@ footer .links { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; 
     <p class="lead">The game's C code is generated on your machine from your own disc, and the build and tests also use
       your own dump of the System Card 2.0 BIOS. Neither is ever committed. You need Visual Studio 2022 Build Tools
       and Python 3.14; SDL3 is downloaded by CMake.</p>
-<pre><code>git clone --recursive https://github.com/GITHUB_USER/YsRecomp.git
+<pre><code>git clone --recursive https://github.com/Fabiano-Gelain/YsRecomp.git
 cd YsRecomp
 <span class="c"># your own files in roms\ :</span>
 <span class="c">#   Ys Book I &amp; II (USA).cue + its .bin tracks</span>
@@ -425,7 +425,7 @@ cd YsRecomp
 .\build.ps1            <span class="c"># first build generates the game's C (~12 min)</span>
 .\build.ps1 -Test      <span class="c"># quick tests</span>
 .\build.ps1 -Package   <span class="c"># player package in dist\</span></code></pre>
-    <p class="note">More in the <a href="https://github.com/GITHUB_USER/YsRecomp#readme">README</a>.</p>
+    <p class="note">More in the <a href="https://github.com/Fabiano-Gelain/YsRecomp#readme">README</a>.</p>
   </div>
 </section>
 </main>
@@ -433,10 +433,10 @@ cd YsRecomp
 <footer>
   <div class="wrap">
     <div class="links">
-      <a href="https://github.com/GITHUB_USER/YsRecomp">YsRecomp on GitHub</a>
-      <a href="https://github.com/GITHUB_USER/PCERecomp">PCERecomp</a>
-      <a href="https://github.com/GITHUB_USER/YsRecomp/blob/main/docs/devlog.md">Development log</a>
-      <a href="https://github.com/GITHUB_USER/YsRecomp/blob/main/THIRD_PARTY_NOTICES.md">Third-party notices</a>
+      <a href="https://github.com/Fabiano-Gelain/YsRecomp">YsRecomp on GitHub</a>
+      <a href="https://github.com/Fabiano-Gelain/PCERecomp">PCERecomp</a>
+      <a href="https://github.com/Fabiano-Gelain/YsRecomp/blob/main/docs/devlog.md">Development log</a>
+      <a href="https://github.com/Fabiano-Gelain/YsRecomp/blob/main/THIRD_PARTY_NOTICES.md">Third-party notices</a>
     </div>
     <p>YsRecomp is an unofficial fan project, released under the MIT License. It contains no ROM, disc image, BIOS or
       code generated from them; use it only with a copy of the game you own.</p>
