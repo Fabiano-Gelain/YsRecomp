@@ -1,0 +1,47 @@
+# Ys Book I & II script (see tools/trace/README.md): RUN on the System Card screen and then every
+# 500 frames, which skips the intro and starts a new game; around frame ~6000 the hero is at Esteria harbor.
+# CD music and ADPCM play along the way (test session_ys_game: image and sound).
+300 RUN
+306 -
+2000 RUN
+2006 -
+2500 RUN
+2506 -
+3000 RUN
+3006 -
+3500 RUN
+3506 -
+4000 RUN
+4006 -
+4500 RUN
+4506 -
+5000 RUN
+5006 -
+5500 RUN
+5506 -
+6000 RUN
+6006 -
+6500 RUN
+6506 -
+7000 RUN
+7006 -
+7500 RUN
+7506 -
+8000 RUN
+8006 -
+8500 RUN
+8506 -
+9000 RUN
+9006 -
+9500 RUN
+9506 -
+10000 RUN
+10006 -
+10500 RUN
+10506 -
+11000 RUN
+11006 -
+11500 RUN
+11506 -
+12000 RUN
+12006 -

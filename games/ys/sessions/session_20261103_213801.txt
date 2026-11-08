@@ -1,0 +1,80 @@
+# Session recorded by YsRecomp on 20261103_213801 (see tools/trace/README.md, "Recorded sessions").
+# game: D:\Roms\PCECD\YsI_II/Ys Book I & II (USA).cue
+# bios: -
+# save: games/ys/sessions/session_20261103_213801.brm
+# frames: 4995
+# motion: new
+# display: 0 pacing switches: 2s 180.0Hz screen x3
+# clock: 8754 images, 25 late, 1 without the frame ready, 0 skips
+# sound: queue empty 0, full 0, waited 0, window stalled 0:
+# marks (F12):
+1644 RUN
+1650 -
+1965 RUN
+1971 -
+2402 RIGHT
+2411 -
+2427 RIGHT
+2435 -
+2449 RUN
+2459 -
+2475 I
+2483 -
+2724 DOWN
+2729 -
+2734 DOWN
+2740 -
+2744 DOWN
+2750 -
+2813 DOWN
+2819 -
+2889 UP
+2896 -
+2929 UP
+2937 -
+2995 DOWN
+3003 -
+3219 DOWN
+3226 -
+3567 UP
+3574 -
+3604 II
+3611 -
+3902 UP
+3908 -
+3915 UP
+3922 -
+3927 UP
+3934 -
+3969 DOWN
+3976 -
+3982 DOWN
+3988 -
+4117 I
+4126 -
+4567 DOWN
+4589 DOWN+LEFT
+4592 LEFT
+4596 DOWN+LEFT
+4598 DOWN
+4644 RIGHT+DOWN
+4647 RIGHT
+4661 RIGHT+DOWN
+4664 DOWN
+4669 DOWN+LEFT
+4679 LEFT
+4692 UP+LEFT
+4695 UP
+4706 UP+LEFT
+4709 LEFT
+4719 DOWN+LEFT
+4746 LEFT
+4771 -
+4777 RIGHT
+4838 II+RIGHT
+4846 II
+4848 -
+4877 II
+4888 II+RIGHT
+4917 II
+4918 -

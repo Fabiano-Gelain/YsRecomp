@@ -1,0 +1,5 @@
+# Session recorded by YsRecomp on 20261024_160836 (see tools/trace/README.md, "Recorded sessions").
+# game: roms\Ys Book I & II (USA).cue
+# bios: roms\[BIOS] TurboGrafx CD System Card (USA) (v2.0).pce
+# save: games/ys/sessions/session_20261024_160836.brm
+# frames: 200

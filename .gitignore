@@ -1,0 +1,55 @@
+# User's protected content: NEVER commit
+roms/*
+!roms/README.md
+*.pce
+*.cue
+*.bin
+*.iso
+*.img
+*.chd
+syscard*
+
+# Cloned external references (see docs/hardware/INDEX.md to restore them)
+reference/
+
+# Code generated from the games
+games/*/generated/
+
+# Build
+build/
+out/
+*.obj
+*.exe
+*.pdb
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Test/debug output
+*.trace
+*.log
+tests/output/
+
+# Editor
+.vscode/
+.vs/
+
+# Lockstep report (written when playing with --lockstep)
+lockstep_divergence.txt
+
+# User saves (CD save memory), written by pce_runtime
+saves/
+
+# Player package (.\build.ps1 -Package)
+dist/
+
+# check_all_sessions.py results (depend on the code version)
+*.conferencia
+
+# Original icon drawing (JPEG 2048x2048; the art read from it lives in tools/package/make_icon.py)
+docs/Icone_novo.png
+
+# Portuguese originals of the roadmap and history (kept locally; the archive is D:\Projetos\pce_recomp)
+docs/pt/

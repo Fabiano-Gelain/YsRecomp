@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reflection on the Ice</title>
+<!-- Preview template: tools/equip/equip_ice_preview.py replaces the DATA marker with the frames. -->
+<style>
+:root { --bg: #f4f2ee; --panel: #ffffff; --ink: #1d1d1f; --muted: #6b6b70; --line: #dddad3; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #17171a; --panel: #222226; --ink: #ececef; --muted: #a0a0a8; --line: #36363c; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, "Segoe UI", sans-serif; }
+main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 24px; margin: 0 0 4px; }
+h2 { font-size: 19px; margin: 32px 0 8px; }
+p.note { color: var(--muted); margin: 0 0 16px; max-width: 75ch; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.pick { display: flex; flex-wrap: wrap; gap: 12px 20px; margin-bottom: 12px; align-items: end; }
+.pick label { display: flex; flex-direction: column; font-size: 13px; color: var(--muted); gap: 4px; }
+select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg);
+  color: var(--ink); min-width: 150px; }
+.stage { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.stage figure { margin: 0; }
+figcaption { font-size: 12px; color: var(--muted); margin-top: 4px; max-width: 42ch; }
+canvas { image-rendering: pixelated; border-radius: 6px; display: block; max-width: 100%; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.grid figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Reflection on the ice</h1>
+<p class="note">Preview to approve before it goes into the game. On the ice of Darm Tower the game itself
+draws the reflection along with Adol: seven rows under his feet, taken from Adol himself upside down, each color
+swapped for a lighter one. Here the same rule applies to the new pieces. Pick the pieces: the four Adols
+walk as in the game. Beside them, the game's original ice frames, for comparison.</p>
+<div class="pick">
+  <label>Background
+    <select id="bg">
+      <option value="#91ffff">Light ice (game floor)</option>
+      <option value="#48daff">Blue ice (game floor)</option>
+      <option value="#000000">Black</option>
+    </select>
+  </label>
+</div>
+<div id="root"></div>
+</main>
+<script>
+const DATA = /*DATA*/null;
+const KIND = { sword: "Sword", shield: "Shield", armor: "Armor" };
+const WALK = [0, 1, 0, 2];
+const SCALE = 6, CELL_W = 18, CELL_H = 28, TOP = 4;
+const anims = [];
+
+function frameOf(str, i) { return str.substr(i * 512, 512); }
+
+function paint(ctx, str, ox, oy, s) {
+  for (let p = 0; p < 512; p++) {
+    const ch = str[p];
+    if (ch === ".") continue;
+    ctx.fillStyle = DATA.colors[ch.charCodeAt(0) - 0x100];
+    ctx.fillRect(ox + (p % 16) * s, oy + Math.floor(p / 16) * s, s, s);
+  }
+}
+
+function makeCanvas(cells, s) {
+  const c = document.createElement("canvas");
+  c.width = cells * CELL_W * s; c.height = CELL_H * s;
+  return c;
+}
+
+function drawRow(canvas, frames, s) {
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = document.getElementById("bg").value;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  frames.forEach((str, n) => paint(ctx, str, (n * CELL_W + 1) * s, -TOP * s, s));
+}
+
+const keyOf = (sel, plain) => `${plain ? "n|" : ""}${sel.sword || "None"}|${sel.shield || "None"}|${sel.armor || "None"}`;
+
+function build() {
+  const root = document.getElementById("root");
+  const panel = document.createElement("div");
+  panel.className = "panel";
+  const pick = document.createElement("div");
+  pick.className = "pick";
+  const sel = { sword: DATA.items.sword[4], shield: DATA.items.shield[4], armor: DATA.items.armor[4] };
+  for (const kind of ["sword", "shield", "armor"]) {
+    const lab = document.createElement("label");
+    lab.textContent = KIND[kind];
+    const s = document.createElement("select");
+    for (const it of [null, ...DATA.items[kind]]) {
+      const o = document.createElement("option");
+      o.value = it || "null"; o.textContent = it || "(none)";
+      s.appendChild(o);
+    }
+    s.value = sel[kind] || "null";
+    s.onchange = () => { sel[kind] = s.value === "null" ? null : s.value; };
+    lab.appendChild(s);
+    pick.appendChild(lab);
+  }
+  panel.appendChild(pick);
+  const stage = document.createElement("div");
+  stage.className = "stage";
+  const figure = (canvas, text) => {
+    const f = document.createElement("figure");
+    f.appendChild(canvas);
+    f.insertAdjacentHTML("beforeend", `<figcaption>${text}</figcaption>`);
+    stage.appendChild(f);
+  };
+  const live = makeCanvas(4, SCALE), normal = makeCanvas(4, SCALE), orig = makeCanvas(4, SCALE);
+  figure(live, "On the ice, with the chosen pieces and the reflection");
+  figure(normal, "The same pieces off the ice (as already in the game)");
+  figure(orig, "The game's original on the ice: with sword and shield if there is a shield, otherwise sword only");
+  panel.appendChild(stage);
+  root.appendChild(panel);
+  anims.push(step => {
+    const k = WALK[step % 4];
+    const ix = [0, 1, 2, 3].map(d => d * 3 + k);
+    drawRow(live, ix.map(i => frameOf(DATA.combos[keyOf(sel)], i)), SCALE);
+    drawRow(normal, ix.map(i => frameOf(DATA.combos[keyOf(sel, true)], i)), SCALE);
+    const o = DATA.orig[sel.shield ? "ss" : "sword"];
+    drawRow(orig, ix.map(i => frameOf(o, i)), SCALE);
+  });
+
+  // catalog: each piece alone on the ice (the rest: none), standing, in the four directions
+  for (const kind of ["armor", "shield", "sword"]) {
+    root.insertAdjacentHTML("beforeend", `<h2>${KIND[kind]}s</h2>`);
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    for (const it of [null, ...DATA.items[kind]]) {
+      const s1 = { sword: null, shield: null, armor: null };
+      s1[kind] = it;
+      const fig = document.createElement("figure");
+      const c = makeCanvas(4, 2);
+      fig.appendChild(c);
+      fig.insertAdjacentHTML("beforeend", `<figcaption>${it || "(none)"}</figcaption>`);
+      grid.appendChild(fig);
+      anims.push(() => drawRow(c, [0, 1, 2, 3].map(d => frameOf(DATA.combos[keyOf(s1)], d * 3)), 2));
+    }
+    root.appendChild(grid);
+  }
+}
+
+build();
+let step = 0;
+function tick() { anims.forEach(f => f(step)); step++; }
+tick();
+setInterval(tick, 125);
+</script>
+</body>
+</html>

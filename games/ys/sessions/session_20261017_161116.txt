@@ -1,0 +1,43 @@
+# Session recorded by YsRecomp on 20261017_161116 (see tools/trace/README.md, "Recorded sessions").
+# game: roms\Ys Book I & II (USA).cue
+# bios: roms\[BIOS] TurboGrafx CD System Card (USA) (v2.0).pce
+# save: games/ys/sessions/session_20261017_161116.brm
+# frames: 3384
+47 RUN
+54 -
+604 RUN
+615 -
+691 RUN
+704 -
+969 RUN
+982 -
+1015 I
+1026 -
+1036 I
+1039 I+II
+1044 II
+1051 -
+1156 RUN
+1170 -
+1426 RUN
+1438 -
+1671 RUN
+1683 -
+2047 RUN
+2060 -
+2222 RUN
+2236 -
+2482 I
+2494 -
+2528 RIGHT
+2537 -
+2560 I
+2570 -
+2583 RUN
+2594 -
+2845 RUN
+2858 -
+2867 I
+2878 -
+3263 RIGHT
+3315 -

@@ -1,0 +1,409 @@
+<title>Ys Launcher Mockup</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<style>
+/* Layout: the whole screen is drawn at 384x216 pixels (16:9) with the PC Engine palette (8 levels per channel) and
+   scaled up without smoothing, centered (black on the sides on a wider monitor). */
+:root {
+  color-scheme: dark;
+  --void: #000;
+  --ink: #ffffff;
+  --dim: #9191b6;
+  --gold: #ffda48;
+}
+html, body { height: 100%; }
+body {
+  background: var(--void); color: var(--ink);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 16px; box-sizing: border-box;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font: 12px/1.4 system-ui, sans-serif; color: var(--dim); }
+.bar button {
+  font: inherit; color: var(--ink); background: #10102a; border: 1px solid #33336d; border-radius: 4px;
+  padding: 4px 10px; cursor: pointer;
+}
+.bar button[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+.bar button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.monitor {
+  width: 100%; max-width: 1400px; aspect-ratio: 16 / 9; background: var(--void);
+  display: flex; justify-content: center; border: 1px solid #222;
+}
+.monitor.wide { aspect-ratio: 21 / 9; }
+.stage { height: 100%; aspect-ratio: 16 / 9; max-width: 100%; position: relative; container-type: size; }
+#screen {
+  width: 100%; height: 100%; display: block;
+  image-rendering: pixelated; image-rendering: crisp-edges; cursor: pointer;
+}
+/* on top of the console image, at screen resolution: the logo (the JPG as is) and the texts, sharp.
+   Positions in 384x216 pixels converted to the 16:9 area */
+/* the logo without the bottom text line (the top 80% of the JPG); the project name is text */
+.logo {
+  position: absolute; top: .9cqh; left: 50%; transform: translateX(-50%); width: 32cqw; aspect-ratio: 505 / 284;
+  pointer-events: none;
+  /* emphasis: dark outline, relief below and a golden glow around */
+  filter: drop-shadow(0 0 .25cqh #000) drop-shadow(0 .5cqh 0 #3a1c00) drop-shadow(0 0 1.8cqh rgba(255, 186, 60, .55));
+  animation: glow 3.2s ease-in-out infinite;
+}
+.logo img { width: 100%; height: 100%; max-width: none; display: block; }
+/* sheen sweeping across the logo (only where the logo is: masked by the image itself) */
+.logo::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 240, .0) 42%, rgba(255, 255, 240, .85) 50%,
+    rgba(255, 255, 240, 0) 58%, transparent 62%) no-repeat;
+  background-size: 300% 100%; background-position: 150% 0;
+  -webkit-mask: var(--logo) center / 100% 100% no-repeat; mask: var(--logo) center / 100% 100% no-repeat;
+  mix-blend-mode: screen; animation: sheen 4.5s ease-in-out infinite;
+}
+@keyframes sheen { 0%, 35% { background-position: 150% 0; } 75%, 100% { background-position: -50% 0; } }
+@keyframes glow {
+  0%, 100% { filter: drop-shadow(0 0 .25cqh #000) drop-shadow(0 .5cqh 0 #3a1c00) drop-shadow(0 0 1.4cqh rgba(255, 186, 60, .45)); }
+  50% { filter: drop-shadow(0 0 .25cqh #000) drop-shadow(0 .5cqh 0 #3a1c00) drop-shadow(0 0 2.4cqh rgba(255, 200, 80, .7)); }
+}
+@media (prefers-reduced-motion: reduce) { .logo, .logo::after { animation: none; } }
+.title {
+  position: absolute; left: 0; right: 0; top: 33.6cqh; text-align: center; pointer-events: none;
+  font: 3.2cqh/1 "Press Start 2P", ui-monospace, monospace; color: #dadaff; text-shadow: .35cqh .35cqh 0 #000;
+}
+.sound { position: absolute; right: 1.5cqw; top: 2cqh; font: 2cqh/1 "Press Start 2P", monospace; color: #9191b6;
+  background: #000a; border: .3cqh solid #6d6d91; padding: 1.1cqh 1.4cqw; cursor: pointer; }
+.sound:focus-visible { outline: 2px solid #ffda48; }
+.wtext {
+  position: absolute; left: 8.6cqw; top: 81.6cqh; width: 82cqw; pointer-events: none;
+  font: 3.1cqh/1.6 "Press Start 2P", ui-monospace, monospace; color: #fff; text-shadow: .35cqh .35cqh 0 #000;
+}
+.wtext .name { color: #ffda48; }
+.hint {
+  position: absolute; left: 0; right: 0; top: 95.4cqh; text-align: center; pointer-events: none;
+  font: 2.2cqh/1 "Press Start 2P", ui-monospace, monospace; color: #9191b6; text-shadow: .3cqh .3cqh 0 #000;
+}
+.hint em { font-style: normal; color: #fff; }
+</style>
+
+<div class="bar" role="toolbar" aria-label="Mockup">
+  <span>Mockup · arrows/click choose, Enter/double-click starts ·</span>
+  <button id="m169" aria-pressed="true">Monitor 16:9</button>
+  <button id="m219" aria-pressed="false">Monitor 21:9</button>
+</div>
+<div class="monitor" id="monitor">
+  <div class="stage">
+    <canvas id="screen" width="384" height="216" aria-label="Start screen: Ys Book I & II, Ys III and Ys IV"></canvas>
+    <div class="logo"><img alt="Ys"></div>
+    <div class="title">PC-ENGINE RECOMP PROJECT</div>
+    <button class="sound" id="sound">SOUND: OFF</button>
+    <div class="wtext" id="wtext" aria-live="polite"></div>
+    <div class="hint"><em>&lt; &gt;</em> CHOOSE &nbsp; <em>RUN</em> START &nbsp; <em>SELECT</em> OPTIONS</div>
+  </div>
+</div>
+
+<script>
+/* positions in 384x216; images, sky and stars drawn at twice the pixels (768x432) */
+const W = 384, H = 216, S = 2;
+const cv = document.getElementById('screen'), ctx = cv.getContext('2d');
+cv.width = W * S; cv.height = H * S;
+ctx.imageSmoothingEnabled = false;
+const layout = () => ctx.setTransform(S, 0, 0, S, 0, 0), native = () => ctx.setTransform(1, 0, 0, 1, 0, 0);
+const LV = [0x00, 0x24, 0x48, 0x6D, 0x91, 0xB6, 0xDA, 0xFF];
+const BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+const q = (v, x, y) => { /* one channel to the console palette, with 4x4 dithering */
+  const f = v / 255 * 7 + (BAYER[y & 3][x & 3] / 16 - 0.5) * 0.9;
+  return LV[Math.max(0, Math.min(7, Math.round(f)))];
+};
+const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+
+/* image bounding box (like launcher_crop_box): rows and columns with more than a few lit pixels */
+function cropBox(img) {
+  const w = img.width, h = img.height, c = mk(w, h), g = c.getContext('2d');
+  g.drawImage(img, 0, 0);
+  const p = g.getImageData(0, 0, w, h).data, rows = new Int32Array(h), cols = new Int32Array(w);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = (y * w + x) * 4;
+    if (Math.max(p[i], p[i + 1], p[i + 2]) > 48) { rows[y]++; cols[x]++; }
+  }
+  const minR = Math.max(1, w / 256 | 0), minC = Math.max(1, h / 256 | 0);
+  let t = 0, b = h - 1, l = 0, r = w - 1;
+  while (t < h && rows[t] <= minR) t++;
+  while (b > t && rows[b] <= minR) b--;
+  while (l < w && cols[l] <= minC) l++;
+  while (r > l && cols[r] <= minC) r--;
+  return t < h && l < w ? { x: l, y: t, w: r - l + 1, h: b - t + 1 } : { x: 0, y: 0, w, h };
+}
+
+/* golden logo: the black background becomes transparent and the light/dark of the drawing maps onto a gold gradient
+   (light at the top, bronze at the bottom), with more contrast and a bright band at mid-height */
+function goldLogo(g, w, h) {
+  const d = g.getImageData(0, 0, w, h), p = d.data;
+  const stops = [[0, [255, 250, 214]], [.3, [255, 214, 92]], [.5, [255, 246, 196]], [.62, [236, 164, 30]], [1, [120, 62, 8]]];
+  const ramp = t => {
+    let k = 0;
+    while (k < stops.length - 2 && t > stops[k + 1][0]) k++;
+    const [t0, a] = stops[k], [t1, b] = stops[k + 1], f = Math.min(1, Math.max(0, (t - t0) / (t1 - t0)));
+    return a.map((v, i) => v + (b[i] - v) * f);
+  };
+  for (let y = 0; y < h; y++) {
+    const base = ramp(y / (h - 1));
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4, m = Math.max(p[i], p[i + 1], p[i + 2]);
+      const lum = (p[i] * .3 + p[i + 1] * .59 + p[i + 2] * .11) / 255;
+      const k = Math.min(1.25, .35 + Math.pow(lum, .8) * 1.1); /* drawing detail, with more contrast */
+      p[i] = Math.min(255, base[0] * k); p[i + 1] = Math.min(255, base[1] * k); p[i + 2] = Math.min(255, base[2] * k);
+      p[i + 3] = Math.min(255, Math.max(0, (m - 28) * 4)); /* black JPG background: transparent */
+    }
+  }
+  g.putImageData(d, 0, 0);
+}
+
+/* shrinks an image to w x h and converts it to the palette; gray = black and white; keyBlack = black becomes transparent */
+function pixelize(img, sx, sy, sw, sh, w, h, opt = {}) {
+  const c = mk(w, h), g = c.getContext('2d');
+  g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+  g.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
+  const d = g.getImageData(0, 0, w, h), p = d.data;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = (y * w + x) * 4;
+    let r = p[i], gg = p[i + 1], b = p[i + 2];
+    if (opt.keyBlack && r + gg + b < 70) { p[i + 3] = 0; continue; }
+    if (opt.gray) { const l = (r * .3 + gg * .59 + b * .11) * .6; r = gg = b = l; }
+    p[i] = q(r, x, y); p[i + 1] = q(gg, x, y); p[i + 2] = q(b, x, y); p[i + 3] = 255;
+  }
+  g.putImageData(d, 0, 0);
+  return c;
+}
+
+/* 8x8 text: the pixel font drawn without half-tones (each pixel on or off), with a 1-pixel shadow */
+const textCache = new Map();
+function text(str, x, y, color, shadow = '#000000') {
+  const key = str + '|' + color + '|' + shadow;
+  let s = textCache.get(key);
+  if (!s) {
+    const w = str.length * 8 + 1;
+    const raw = mk(w, 9), g = raw.getContext('2d');
+    g.font = '8px "Press Start 2P"'; g.textBaseline = 'top';
+    g.fillStyle = '#fff'; g.fillText(str, 0, 0);
+    const a = g.getImageData(0, 0, w, 9).data;
+    s = mk(w, 9); const o = s.getContext('2d');
+    for (let yy = 0; yy < 8; yy++) for (let xx = 0; xx < w - 1; xx++)
+      if (a[(yy * w + xx) * 4 + 3] > 110) {
+        if (shadow) { o.fillStyle = shadow; o.fillRect(xx + 1, yy + 1, 1, 1); }
+      }
+    for (let yy = 0; yy < 8; yy++) for (let xx = 0; xx < w - 1; xx++)
+      if (a[(yy * w + xx) * 4 + 3] > 110) { o.fillStyle = color; o.fillRect(xx, yy, 1, 1); }
+    textCache.set(key, s);
+  }
+  ctx.drawImage(s, x | 0, y | 0);
+}
+const center = (str, y, color, shadow) => text(str, (W - str.length * 8) / 2, y, color, shadow);
+
+/* background: sky in dithered bands, moon, stars, mountains and Darm Tower, drawn once */
+let seed = 11;
+const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
+/* background at 384x216 (user's preference: sky, moon, mountains and tower in big pixels); the stars,
+   on top, in small pixels */
+const bg = mk(W, H);
+(function drawBackground() {
+  const g = bg.getContext('2d');
+  const bands = ['#000024', '#000048', '#00006D', '#24246D', '#48246D', '#6D2448'];
+  const bh = 150 / (bands.length - 1);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const f = Math.min(y / bh, bands.length - 1.001), k = Math.floor(f), t = f - k;
+    g.fillStyle = bands[k + (t * 16 > BAYER[y & 3][x & 3] + 2 && t > .5 ? 1 : 0)];
+    g.fillRect(x, y, 1, 1);
+  }
+  /* moon */
+  const mx = 338, my = 30, mr = 11;
+  for (let y = -mr; y <= mr; y++) for (let x = -mr; x <= mr; x++)
+    if (x * x + y * y <= mr * mr) {
+      const shade = (x + 4) * (x + 4) + (y + 4) * (y + 4) > 120 ? '#DADA91' : '#FFFFDA';
+      g.fillStyle = shade; g.fillRect(mx + x, my + y, 1, 1);
+    }
+  g.fillStyle = '#B6B66D';
+  [[3, 2, 3, 2], [-5, 4, 2, 2], [-1, -6, 2, 1], [5, -3, 1, 2]].forEach(([x, y, w, h]) => g.fillRect(mx + x, my + y, w, h));
+  /* distant mountains */
+  const ridge = (base, amp, color, step) => {
+    g.fillStyle = color;
+    let h = base;
+    for (let x = 0; x < W; x += step) {
+      h += (rnd() - .5) * amp; h = Math.max(base - 22, Math.min(base + 8, h));
+      g.fillRect(x, h | 0, step, H - (h | 0));
+    }
+  };
+  ridge(150, 9, '#242448', 2);
+  /* Darm Tower: on the horizon, to the left */
+  const tx = 30, top = 92;
+  g.fillStyle = '#000024';
+  g.fillRect(tx, top, 16, H - top);
+  g.fillRect(tx - 2, top + 6, 20, 3);
+  for (let i = 0; i < 5; i++) g.fillRect(tx - 2 + i * 4, top - 3, 2, 3);
+  g.fillStyle = '#FFDA48';
+  for (let i = 0; i < 6; i++) g.fillRect(tx + 4 + (i % 2) * 7, top + 16 + i * 14, 2, 3);
+  ridge(172, 7, '#000024', 3);
+})();
+/* stars only in the sky, outside the moon */
+const stars = Array.from({ length: 220 }, () => ({ x: rnd() * W * S | 0, y: rnd() * 250 | 0, p: rnd() * 8 | 0, c: rnd() }))
+  .filter(s => (s.x - 676) ** 2 + (s.y - 60) ** 2 > 30 * 30);
+
+/* the user's images */
+const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src; });
+const games = [
+  { src: 'YS I II.jpg', ok: true, name: 'Ys Book I & II', date: 'JP 1989.12.21  US 1990' },
+  { src: 'Ys III.jpg', name: 'Ys III: Wanderers from Ys', date: 'JP 1991.03.22  US 1991' },
+  { src: 'Ys IV.jpg', name: 'Ys IV: The Dawn of Ys', date: 'JP 1993.12.22' },
+];
+const CW = 88, CH = 76, GAP = 20, CX0 = (W - (CW * 3 + GAP * 2)) / 2, CY = 93;
+let logo, sel = 0, frame = 0, msg = null, typed = 0;
+
+/* game window: double border, blue with a dithered gradient */
+function windowBox(x, y, w, h) {
+  ctx.fillStyle = '#000000'; ctx.fillRect(x - 1, y - 1, w + 2, h + 2);
+  ctx.fillStyle = '#DADAFF'; ctx.fillRect(x, y, w, h);
+  ctx.fillStyle = '#6D6D91'; ctx.fillRect(x + 1, y + 1, w - 2, h - 2);
+  ctx.fillStyle = '#000000'; ctx.fillRect(x + 2, y + 2, w - 4, h - 4);
+  const cols = ['#2448B6', '#244891', '#00246D', '#000048'];
+  for (let yy = 3; yy < h - 3; yy++) {
+    const f = (yy - 3) / (h - 7) * (cols.length - 1.001), k = Math.floor(f), t = f - k;
+    for (let xx = 3; xx < w - 3; xx++) {
+      ctx.fillStyle = cols[k + (t * 16 > BAYER[yy & 3][xx & 3] ? 1 : 0)];
+      ctx.fillRect(x + xx, y + yy, 1, 1);
+    }
+  }
+}
+function wrap(str, max) {
+  const out = [''];
+  for (const w of str.split(' ')) {
+    const cur = out[out.length - 1];
+    if ((cur + ' ' + w).trim().length > max) out.push(w); else out[out.length - 1] = (cur + ' ' + w).trim();
+  }
+  return out;
+}
+
+function draw() {
+  layout();
+  ctx.drawImage(bg, 0, 0);
+  native();
+  for (const s of stars) {
+    const on = (frame / 4 + s.p) % 8 | 0;
+    if (on === 0) continue;
+    ctx.fillStyle = s.c < .15 ? '#FFDA91' : on < 2 ? '#6D6DB6' : '#DADAFF';
+    ctx.fillRect(s.x, s.y, 2, 2); /* 2x2-pixel stars (the approved mockup: 1) */
+    if (s.c > .94 && on > 4) { ctx.fillRect(s.x - 4, s.y, 10, 2); ctx.fillRect(s.x, s.y - 4, 2, 10); }
+  }
+  layout();
+  games.forEach((gm, i) => {
+    if (!gm.color) return;
+    const x = CX0 + i * (CW + GAP), y = CY - (i === sel ? 2 : 0);
+    ctx.drawImage(i === sel ? gm.color : gm.gray, x, y, CW, CH);
+    if (i === sel) { /* blinking frame, like the game's cursor */
+      ctx.fillStyle = (frame >> 3) & 1 ? '#FFFFFF' : '#FFDA48';
+      ctx.fillRect(x - 2, y - 2, CW + 4, 1); ctx.fillRect(x - 2, y + CH + 1, CW + 4, 1);
+      ctx.fillRect(x - 2, y - 2, 1, CH + 4); ctx.fillRect(x + CW + 1, y - 2, 1, CH + 4);
+      /* arrow on top */
+      const ax = x + CW / 2 - 5, ay = y - 9 + ((frame >> 4) & 1);
+      ctx.fillStyle = '#000000'; for (let r = 0; r < 6; r++) ctx.fillRect(ax + r + 1, ay + r + 1, 11 - r * 2, 1);
+      ctx.fillStyle = '#FFDA48'; for (let r = 0; r < 6; r++) ctx.fillRect(ax + r, ay + r, 11 - r * 2, 1);
+    }
+  });
+  const wx = 24, wy = 174, ww = W - 48, wh = 30;
+  windowBox(wx, wy, ww, wh);
+  let html;
+  if (msg) {
+    typed = Math.min(msg.length, typed + 1);
+    html = esc(msg.slice(0, typed));
+    if (typed === msg.length && (frame >> 4) & 1) {
+      ctx.fillStyle = '#FFDA48';
+      for (let r = 0; r < 4; r++) ctx.fillRect(wx + ww - 16 + r, wy + wh - 10 + r, 7 - r * 2, 1);
+    }
+  } else {
+    const gm = games[sel];
+    html = '<div class="name">' + esc(gm.name) + '</div><div>Released ' + esc(gm.date) + '</div>';
+  }
+  if (html !== shown) { wtext.innerHTML = html; shown = html; }
+  frame++;
+}
+const wtext = document.getElementById('wtext');
+let shown = '';
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+/* placeholder chip-style sound (short square/triangle waves); in the game: Ys's own effects through the
+   emulated sound chip and music from a track of the user's CD */
+let ac = null, musicTimer = null;
+function tone(freq, t0, dur, type = 'square', vol = .08, slide = 0) {
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t0);
+  if (slide) o.frequency.linearRampToValueAtTime(freq * slide, t0 + dur);
+  g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(.0005, t0 + dur);
+  o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0 + dur + .02);
+}
+const sfx = {
+  move() { if (ac) tone(1320, ac.currentTime, .05, 'square', .05); },
+  ok() { if (!ac) return; const t = ac.currentTime; [784, 988, 1319].forEach((f, i) => tone(f, t + i * .06, .14, 'square', .06)); },
+  no() { if (!ac) return; const t = ac.currentTime; tone(220, t, .12, 'square', .06); tone(165, t + .13, .22, 'square', .06); },
+};
+function music() { /* calm arpeggio in A minor, looping (placeholder) */
+  const notes = [57, 64, 69, 72, 76, 72, 69, 64, 53, 60, 65, 69, 72, 69, 65, 60, 55, 62, 67, 71, 74, 71, 67, 62, 52, 59, 64, 68, 71, 68, 64, 59];
+  const hz = n => 440 * Math.pow(2, (n - 69) / 12), step = .24;
+  let t = ac.currentTime + .05;
+  notes.forEach((n, i) => { tone(hz(n), t + i * step, step * 2.2, 'triangle', .07); if (i % 8 === 0) tone(hz(n - 12), t + i * step, step * 7, 'triangle', .05); });
+  musicTimer = setTimeout(music, notes.length * step * 1000);
+}
+const soundBtn = document.getElementById('sound');
+soundBtn.addEventListener('click', () => {
+  if (ac) { clearTimeout(musicTimer); ac.close(); ac = null; soundBtn.textContent = 'SOUND: OFF'; return; }
+  ac = new (window.AudioContext || window.webkitAudioContext)();
+  soundBtn.textContent = 'SOUND: ON';
+  music();
+});
+
+function pick(i) { const n = (i + 3) % 3; if (n !== sel) sfx.move(); sel = n; msg = null; }
+function start() {
+  msg = games[sel].ok ? "Now loading... Adol's journey begins." : 'This adventure has not been released yet.';
+  games[sel].ok ? sfx.ok() : sfx.no();
+  typed = 0;
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') { pick(sel + 1); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft') { pick(sel - 1); e.preventDefault(); }
+  else if (e.key === 'Enter' || e.key === ' ') { start(); e.preventDefault(); }
+});
+function hit(e) {
+  const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W, y = (e.clientY - r.top) / r.height * H;
+  for (let i = 0; i < 3; i++) {
+    const cx = CX0 + i * (CW + GAP);
+    if (x >= cx && x < cx + CW && y >= CY - 2 && y < CY + CH) return i;
+  }
+  return -1;
+}
+cv.addEventListener('click', e => { const i = hit(e); if (i >= 0 && i !== sel) pick(i); });
+cv.addEventListener('dblclick', e => { const i = hit(e); if (i >= 0) { pick(i); start(); } });
+
+(async () => {
+  await document.fonts.load('8px "Press Start 2P"');
+  const covers = await Promise.all(games.map(g => load(g.src)));
+  covers.forEach((img, i) => {
+    const b = cropBox(img);
+    games[i].color = pixelize(img, b.x, b.y, b.w, b.h, CW * S, CH * S);
+    games[i].gray = pixelize(img, b.x, b.y, b.w, b.h, CW * S, CH * S, { gray: true });
+  });
+  /* logo: the top 80% of the bounding box (without the bottom text line), like the launcher */
+  const li = await load('Ys Logo.jpg'), lb = cropBox(li), lh = Math.round(lb.h * 4 / 5);
+  const lc = mk(lb.w, lh), lg = lc.getContext('2d');
+  lg.drawImage(li, lb.x, lb.y, lb.w, lh, 0, 0, lb.w, lh);
+  goldLogo(lg, lb.w, lh);
+  const logoEl = document.querySelector('.logo'), url = lc.toDataURL();
+  logoEl.style.aspectRatio = lb.w + ' / ' + lh;
+  logoEl.style.setProperty('--logo', 'url(' + url + ')');
+  logoEl.querySelector('img').src = url;
+})();
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function loop() { draw(); if (still) frame = 0; requestAnimationFrame(() => setTimeout(loop, 1000 / 30)); })();
+
+const mon = document.getElementById('monitor');
+const b169 = document.getElementById('m169'), b219 = document.getElementById('m219');
+function wide(on) {
+  mon.classList.toggle('wide', on);
+  b169.setAttribute('aria-pressed', String(!on));
+  b219.setAttribute('aria-pressed', String(on));
+}
+b169.addEventListener('click', () => wide(false));
+b219.addEventListener('click', () => wide(true));
+</script>

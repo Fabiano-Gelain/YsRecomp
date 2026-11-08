@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Equipment on Adol</title>
+<!-- Preview template: tools/equip/equip_preview.py replaces the DATA marker with the frames and layers. -->
+<style>
+:root {
+  --bg: #f4f2ee; --panel: #ffffff; --ink: #1d1d1f; --muted: #6b6b70; --line: #dddad3; --accent: #b3261e;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #17171a; --panel: #222226; --ink: #ececef; --muted: #a0a0a8; --line: #36363c; --accent: #ff6b5e; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, "Segoe UI", sans-serif; }
+main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 24px; margin: 0 0 4px; }
+h2 { font-size: 19px; margin: 32px 0 8px; }
+h3 { font-size: 15px; margin: 18px 0 6px; color: var(--muted); font-weight: 600; }
+p.note { color: var(--muted); margin: 0 0 16px; max-width: 75ch; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.pick { display: flex; flex-wrap: wrap; gap: 12px 20px; margin-bottom: 12px; align-items: end; }
+.pick label { display: flex; flex-direction: column; font-size: 13px; color: var(--muted); gap: 4px; }
+select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg);
+  color: var(--ink); min-width: 150px; }
+.stage { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.stage figure { margin: 0; }
+figcaption { font-size: 12px; color: var(--muted); margin-top: 4px; }
+canvas { image-rendering: pixelated; border-radius: 6px; display: block; max-width: 100%; }
+.withicon { display: flex; align-items: center; gap: 8px; }
+canvas.icon { border-radius: 4px; flex: none; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.grid figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Equipment on Adol</h1>
+<p class="note">Preview to approve before it goes into the game. The colors, the swords and the
+shields (each with its own shape and size) are new drawings, made by hand in the style of small Adol from
+the equipment screen icons (the game's icon appears
+next to each choice, when the game showed it in a recorded session); hair, face and steps are the game's
+own. Pick the pieces: the four Adols walk as in the game (8 steps per second), with the shield
+held still on the arm. Beside them, the game's original Adol, for comparison.</p>
+<div class="pick">
+  <label>Background
+    <select id="bg">
+      <option value="#6b8f3a">Grass</option>
+      <option value="#c9b06a">Town sand</option>
+      <option value="#3a3a46">Dungeon</option>
+      <option value="#000000">Black</option>
+    </select>
+  </label>
+</div>
+<div id="games"></div>
+</main>
+<script>
+const DATA = /*DATA*/null;
+const NAMES = { ys1: "Ys I", ys2: "Ys II" };
+const KIND = { sword: "Sword", shield: "Shield", armor: "Armor" };
+const NONE = "(none)";
+// walk: standing, step 1, standing, step 2 (indices within the direction)
+const WALK = [0, 1, 0, 2];
+
+function frameOf(str, i) { return str.substr(i * 512, 512); }
+
+function paint(ctx, layers, ox, oy, s) {
+  const n = layers[0].length;  // 512 pixels (Adol, 16x32) or 256 (icon, 16x16)
+  const px = new Array(n).fill(null);
+  for (const L of layers) {
+    for (let p = 0; p < n; p++) {
+      const ch = L[p];
+      if (ch === ".") continue;
+      px[p] = ch === "-" ? null : DATA.colors[ch.charCodeAt(0) - 0x100];
+    }
+  }
+  for (let p = 0; p < n; p++) {
+    if (!px[p]) continue;
+    ctx.fillStyle = px[p];
+    ctx.fillRect(ox + (p % 16) * s, oy + Math.floor(p / 16) * s, s, s);
+  }
+}
+
+// game view: nothing, sword only, sword and shield, shield only (the shield drawing, without the blade)
+function viewOf(sel) {
+  return sel.shield ? (sel.sword ? "ss" : "sn") : (sel.sword ? "sword" : "nosword");
+}
+
+function layersFor(game, sel, i) {
+  const G = DATA.games[game];
+  const v = viewOf(sel);
+  const a = sel.armor || "None";
+  const out = [frameOf(G.body[`${a}|${v}`], i)];
+  if (sel.sword) out.push(frameOf(G.sword[`${sel.sword}|${a}|${v}`], i));
+  if (sel.shield) out.push(frameOf(G.shield[`${sel.shield}|${a}|${v}`], i));
+  return out;
+}
+
+// icon from the game's equipment screen (16x16, black background as in the menu); no icon: empty box
+function drawIcon(c, game, item) {
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, c.width, c.height);
+  const str = item && DATA.games[game].icons[item];
+  if (str) paint(ctx, [str], 0, 0, c.width / 16);
+}
+
+function iconCanvas(game, item, s = 3) {
+  const c = document.createElement("canvas");
+  c.width = c.height = 16 * s;
+  c.className = "icon";
+  c.title = "Icon from the game's equipment screen";
+  drawIcon(c, game, item);
+  return c;
+}
+
+const SCALE = 5, CELL_W = 18, CELL_H = 24, TOP = 4;
+const anims = [];
+
+function drawRow(canvas, frames, s) {
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = document.getElementById("bg").value;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  frames.forEach((layers, n) => paint(ctx, layers, (n * CELL_W + 1) * s, -TOP * s, s));
+}
+
+function makeCanvas(cells, s) {
+  const c = document.createElement("canvas");
+  c.width = cells * CELL_W * s; c.height = CELL_H * s;
+  return c;
+}
+
+function buildGame(game) {
+  const G = DATA.games[game];
+  const sec = document.createElement("section");
+  sec.innerHTML = `<h2>${NAMES[game]}</h2>`;
+  const panel = document.createElement("div");
+  panel.className = "panel";
+  const pick = document.createElement("div");
+  pick.className = "pick";
+  const sel = { sword: null, shield: null, armor: null };
+  for (const kind of ["sword", "shield", "armor"]) {
+    const lab = document.createElement("label");
+    lab.textContent = KIND[kind];
+    const s = document.createElement("select");
+    for (const it of [null, ...G.items[kind]]) {
+      const o = document.createElement("option");
+      o.value = it || ""; o.textContent = it || NONE;
+      s.appendChild(o);
+    }
+    const ic = iconCanvas(game, null);
+    s.onchange = () => { sel[kind] = s.value || null; drawIcon(ic, game, sel[kind]); };
+    const row = document.createElement("div");
+    row.className = "withicon";
+    row.append(s, ic);
+    lab.appendChild(row);
+    pick.appendChild(lab);
+  }
+  panel.appendChild(pick);
+  const stage = document.createElement("div");
+  stage.className = "stage";
+  const fig1 = document.createElement("figure");
+  const live = makeCanvas(4, SCALE);
+  fig1.appendChild(live);
+  fig1.insertAdjacentHTML("beforeend", "<figcaption>With the chosen equipment</figcaption>");
+  const fig2 = document.createElement("figure");
+  const orig = makeCanvas(4, SCALE);
+  fig2.appendChild(orig);
+  fig2.insertAdjacentHTML("beforeend", "<figcaption>The game's original (nothing, with sword, or with sword and shield)</figcaption>");
+  stage.append(fig1, fig2);
+  panel.appendChild(stage);
+  sec.appendChild(panel);
+  anims.push(step => {
+    const k = WALK[step % 4];
+    drawRow(live, [0, 1, 2, 3].map(d => layersFor(game, sel, d * 3 + k)), SCALE);
+    const o = DATA.orig[sel.shield ? "ss" : (sel.sword ? "sword" : "nosword")];
+    drawRow(orig, [0, 1, 2, 3].map(d => [frameOf(o, d * 3 + k)]), SCALE);
+  });
+
+  // catalog: each piece alone (the rest: none), front, back and both sides
+  for (const kind of ["armor", "shield", "sword"]) {
+    sec.insertAdjacentHTML("beforeend", `<h3>${KIND[kind]}s</h3>`);
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    for (const it of [null, ...G.items[kind]]) {
+      const s1 = { sword: null, shield: null, armor: null };
+      s1[kind] = it;
+      const fig = document.createElement("figure");
+      const c = makeCanvas(4, 2);
+      fig.appendChild(c);
+      const cap = document.createElement("figcaption");
+      cap.className = "withicon";
+      cap.append(iconCanvas(game, it, 2), document.createTextNode(it || NONE));
+      fig.appendChild(cap);
+      grid.appendChild(fig);
+      anims.push(() => drawRow(c, [0, 1, 2, 3].map(d => layersFor(game, s1, d * 3)), 2));
+    }
+    sec.appendChild(grid);
+  }
+  document.getElementById("games").appendChild(sec);
+}
+
+for (const g of Object.keys(DATA.games)) buildGame(g);
+let step = 0;
+function tick() { anims.forEach(f => f(step)); step++; }
+tick();
+setInterval(tick, 125);
+</script>
+</body>
+</html>

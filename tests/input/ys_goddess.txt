@@ -1,0 +1,9 @@
+# Ys script (test fade_ys): RUN on the System Card screen, RUN during the intro music
+# (the game turns the fade on and goes to the goddess menu) and RUN on the goddess menu (the game turns the fade on again).
+# In Mednafen the menu stays silent; Geargrafx lets the music come back for ~1 s. See runtime/cd/cdrom.h.
+300 RUN
+306 -
+2400 RUN
+2406 -
+3000 RUN
+3006 -

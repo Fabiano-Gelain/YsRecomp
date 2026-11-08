@@ -1,0 +1,33 @@
+# Session recorded by YsRecomp on 20261022_000602 (see tools/trace/README.md, "Recorded sessions").
+# game: D:\Roms\PCECD\YsI_II/Ys Book I & II (USA).cue
+# bios: -
+# save: games/ys/sessions/session_20261022_000602.brm
+# frames: 3624
+1644 RUN
+1650 -
+1965 RUN
+1971 -
+2417 RIGHT
+2426 -
+2448 I
+2455 -
+2486 RUN
+2495 -
+2776 DOWN
+2781 -
+2785 DOWN
+2790 -
+2793 DOWN
+2800 -
+2803 DOWN
+2809 -
+2829 I
+2834 -
+3265 DOWN
+3273 -
+3286 RIGHT
+3306 -
+3312 UP
+3330 -
+3478 I
+3487 -

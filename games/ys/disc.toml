@@ -1,0 +1,64 @@
+# Ys Book I & II disc map for the recompiler: where the game puts each disc file in memory and
+# where its code starts. With this the recompiler translates all of the game's code without
+# depending on recorded sessions (they only check: recomp.py disc ... --check games/ys/coverage).
+# How the game loads its files: docs/ys_notes.md, "Disc files and loader".
+#
+# Points: "page:bank:offset" in hexadecimal (bank = REAL RAM bank, as in the coverage).
+
+base_sector = 3596             # first sector of the data track
+
+[table]                       # size of each file, read by the game's loader (routine $4165)
+sector = 3660                  # file 0 (RAM $0000 = logical $4000)
+offset = 0x181          # table at $4181: one byte (sectors) per file
+entries = 92
+sectors_per_file = 32      # file N starts at sector base + (N + first) * 32
+first = 2
+
+# Far call of the large programs: JSR routine / BRA *+4 / .dw target. The routine maps into window 3 the
+# bank stored in a variable (set at $A0C2 of the program: $2F = $81, $30 = $82, $31 = $86) and calls
+# the target. With "family", the target is in the bank of that load family (the area loaded right now).
+[[far_call]]
+routine = 0x4B63
+bank = "81"
+[[far_call]]
+routine = 0x4B69
+bank = "82"
+[[far_call]]
+routine = 0x4B6F
+bank = "86"
+family = "area"
+
+[[family]]
+name = "boot"              # sectors 0-1 of the track: the real BIOS puts them at $2800 and calls $2B26
+sector = 3596
+sectors = 2
+ram = 0x10800
+banks = { "F8" = 1 }         # real bank -> window the code runs in
+entries = ["1:F8:0B26"]
+
+[[family]]
+name = "resident"            # file 0: the disc IPL puts 2 sectors at $4000 and jumps there
+files = [0]
+sectors = 2
+ram = 0x0000
+banks = { "80" = 2 }
+entries = ["2:80:0000"]
+
+[[family]]
+name = "program"             # main programs: $40E7 puts them at $4800 and jumps there
+size = 0x13                # every 19-sector file in the table
+ram = 0x0800
+banks = { "80" = 2, "81" = 3, "82" = 3, "83" = 5 }
+entries = ["2:80:0800"]
+# Guesses (only accepted if the code starting at them decodes completely, Analysis._plausible):
+script = { "14" = 1, "04" = 2 } # cutscene scripts: 14 lo hi calls a routine; 04 xx lo hi likewise
+
+[[family]]
+name = "area"                 # area code: $410B puts the file at $6000 (banks 83-86); the code
+size = 0x10                # is in bank 86, in window 3. Every 16-sector file in the table
+ram = 0x6000
+banks = { "86" = 3 }
+loose_pointers = true       # guess: every word of the file that points into code (event tables etc.)
+# entries: the file's character lists (routine $578A of Ys I): [routine (2 bytes), priority (FF = end),
+# bank - $80]
+routine_records = { address = 0, bank = 3, bank_add = 0x80, discard = { 2 = 0xFF } }

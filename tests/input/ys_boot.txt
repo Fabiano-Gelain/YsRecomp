@@ -1,0 +1,4 @@
+# Ys Book I & II script (see tools/trace/README.md): RUN on the System Card screen.
+# <frame> <buttons>: the buttons take effect when the frame ends.
+300 RUN
+306 -

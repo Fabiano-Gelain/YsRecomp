@@ -1,0 +1,54 @@
+# Session recorded by YsRecomp on 20261025_160756 (see tools/trace/README.md, "Recorded sessions").
+# game: D:\Roms\PCECD\YsI_II/Ys Book I & II (USA).cue
+# bios: -
+# save: games/ys/sessions/session_20261025_160756.brm
+# frames: 4076
+# motion: new
+# display: 0 pacing switches: 
+# clock: 3823 images, 0 late, 371 without the frame ready, 0 skips
+1644 RUN
+1650 -
+1965 RUN
+1971 -
+2410 RIGHT
+2421 -
+2437 RIGHT
+2446 -
+2472 RUN
+2484 -
+2741 DOWN
+2747 -
+2751 DOWN
+2757 -
+2761 DOWN
+2767 -
+2771 DOWN
+2778 -
+2787 I
+2794 -
+3245 RIGHT
+3335 UP+RIGHT
+3338 UP
+3393 UP+LEFT
+3399 LEFT
+3448 DOWN+LEFT
+3450 DOWN
+3458 DOWN+LEFT
+3459 LEFT
+3569 -
+3574 RIGHT
+3675 -
+3679 LEFT
+3795 -
+3799 RIGHT
+3929 -
+3959 RIGHT
+3971 -
+3984 SELECT
+3994 -
+4018 DOWN
+4024 -
+4030 DOWN
+4035 -
+4055 II
+4061 -

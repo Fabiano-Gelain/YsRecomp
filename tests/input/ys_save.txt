@@ -1,0 +1,21 @@
+# Ys script with a save (test session_ys_save; save in tests/input/ys_save.brm, made by the user's first
+# session, games/ys/sessions/session_20261017_153505.txt). Intro skipped, "Continue" on the menu and the
+# location screen shows "1: Minea Town".
+300 RUN
+306 -
+2400 RUN
+2406 -
+3000 RUN
+3006 -
+3600 DOWN
+3606 -
+3700 I
+3706 -
+4200 RIGHT
+4206 -
+4260 I
+4266 -
+4400 I
+4406 -
+4500 RUN
+4506 -
