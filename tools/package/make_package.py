@@ -18,6 +18,7 @@ README = os.path.join(ROOT, "package", "README.txt")
 ICON = os.path.join(ROOT, "runtime", "app", "ysrecomp.ico")
 FILES = ("YsRecomp.exe", "README.txt")
 KEEP = ("YsRecomp.ini", "saves", "sessions", "menu_font.bin", "launcher_sfx.bin")
+GAME_DATA = ("menu_font.bin", "launcher_sfx.bin")
 # Start menu images: pixel-art CD cases and the logo, made by the user (nothing from the disc)
 LAUNCHER_IMAGES = ("Ys Logo.jpg", "YS I II.jpg", "Ys III.jpg", "Ys IV.jpg")
 
@@ -78,6 +79,14 @@ def make(exe, out):
             z.write(os.path.join(folder, name), f"YsRecomp/{name}")
         for name in images:
             z.write(os.path.join(folder, "launcher", name), f"YsRecomp/launcher/{name}")
+        # The menu font and the launcher sound effects, made by the program from the disc on its first run here:
+        # shipped so the player sees the menu font and hears the launcher right away (without them the program
+        # makes them again from the player's disc).
+        for name in GAME_DATA:
+            if os.path.isfile(os.path.join(folder, name)):
+                z.write(os.path.join(folder, name), f"YsRecomp/{name}")
+            else:
+                print(f"Note: {name} is not in {folder} (run the game once from there): not in the zip.")
     return folder, zip_path
 
 
